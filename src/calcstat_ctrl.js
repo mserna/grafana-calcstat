@@ -41,6 +41,7 @@ const panelDefaults = {
   postfixFontSize: '50%',
   thresholds: '',
   colorBackground: false,
+  circleBackground: false,
   colorValue: false,
   colors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
   sparkline: {
@@ -81,40 +82,40 @@ export class CalcStatCtrl extends MetricsPanelCtrl {
   }
 
   onDataReceived(dataList) {
-    let from = this.range.from.format("x");
-    let to = this.range.to.format("x");
+    // let from = this.range.from.format("x");
+    // let to = this.range.to.format("x");
 
-    for (let i=0; i < dataList.length; i++) {
-      let interval = kbn.interval_to_seconds(this.panel.targets[0].period) * 1000;
-      if (dataList[i].datapoints && dataList[i].datapoints.length != 0) {
-        let firstPoint = dataList[i].datapoints[0];
-        let lastPoint = dataList[i].datapoints[dataList[i].datapoints.length - 1];
-        let lookup = dataList[i].datapoints.reduce(function(map, point) {
-          map[point[1]] = point[0];
-          return map;
-        }, {});
+    // for (let i=0; i < dataList.length; i++) {
+    //   let interval = kbn.interval_to_seconds(this.panel.targets[0].period) * 1000;
+    //   if (dataList[i].datapoints && dataList[i].datapoints.length != 0) {
+    //     let firstPoint = dataList[i].datapoints[0];
+    //     let lastPoint = dataList[i].datapoints[dataList[i].datapoints.length - 1];
+    //     let lookup = dataList[i].datapoints.reduce(function(map, point) {
+    //       map[point[1]] = point[0];
+    //       return map;
+    //     }, {});
 
-        let datapoints = [];
-        // work on before first point
-        for (let timestamp = firstPoint[1] - interval; timestamp > from - interval; timestamp -= interval) {
-          datapoints.unshift([this.panel.nullFiller, timestamp]);
-        }
+    //     let datapoints = [];
+    //     // work on before first point
+    //     for (let timestamp = firstPoint[1] - interval; timestamp > from - interval; timestamp -= interval) {
+    //       datapoints.unshift([this.panel.nullFiller, timestamp]);
+    //     }
 
-        // work on filling in the gaps
-        for (let timestamp = firstPoint[1]; timestamp <= to - interval; timestamp += interval) {
-          if (lookup[timestamp] != null) {
-            datapoints.push([lookup[timestamp], timestamp]);
-          }
-          else {
-            datapoints.push([this.panel.nullFiller, timestamp]);
-          }
-        }
-        dataList[i].datapoints = datapoints;
-      }
-      else {
-        dataList[i].datapoints = [];
-      }
-    }
+    //     // work on filling in the gaps
+    //     for (let timestamp = firstPoint[1]; timestamp <= to - interval; timestamp += interval) {
+    //       if (lookup[timestamp] != null) {
+    //         datapoints.push([lookup[timestamp], timestamp]);
+    //       }
+    //       else {
+    //         datapoints.push([this.panel.nullFiller, timestamp]);
+    //       }
+    //     }
+    //     dataList[i].datapoints = datapoints;
+    //   }
+    //   else {
+    //     dataList[i].datapoints = [];
+    //   }
+    // }
 
     var data= {};
     if (dataList.length > 0 && dataList[0].type === 'table'){
@@ -694,6 +695,34 @@ setTableColumnToSensibleDefault(tableData) {
       } else {
         $panelContainer.css('background-color', '');
         elem.css('background-color', '');
+        panel.circleBackground = false;
+      }
+
+      if (panel.circleBackground) {
+        let circleHeight = $($panelContainer.height())[0] - 27;
+        let circleWidth = $($panelContainer.width())[0];
+
+        $($panelContainer).addClass('circle');
+        $panelContainer.css('background-color', '');
+
+        if (circleWidth >= circleHeight) {
+          elem.css({
+            'border-radius': '50%',
+            width: circleHeight + 'px',
+            height: circleHeight + 'px',
+            'background-color': color,
+          });
+        } else {
+          elem.css({
+            'border-radius': '50%',
+            width: circleWidth + 'px',
+            height: circleWidth + 'px',
+            'background-color': color,
+          });
+        }
+      } else {
+        $($panelContainer).removeClass('circle');
+        elem.css({ 'border-radius': '0', width: '', height: '' });
       }
 
       elem.html(body);

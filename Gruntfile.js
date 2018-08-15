@@ -21,7 +21,7 @@ module.exports = (grunt) => {
           expand: true,
           cwd: 'src/modules',
           src: '**/*.js',
-          dest: 'dist/calcstat/modules'
+          dest: 'dist/modules'
         }]
       }
     },
@@ -31,30 +31,30 @@ module.exports = (grunt) => {
         cwd: 'src',
         expand: true,
         src: ['**/*', '!**/*.js', '!**/*.scss', '!img/**/*'],
-        dest: 'dist/calcstat'
+        dest: 'dist'
       },
       external_to_dist: {
         cwd: 'src/modules',
         expand: true,
         src: ['**/*.js'],
-        dest: 'dist/calcstat/modules'
+        dest: 'dist/modules'
       },
       pluginDef: {
         expand: true,
         src: ['plugin.json', 'README.md'],
-        dest: 'dist/calcstat',
+        dest: 'dist',
       },
       img_to_dist: {
         cwd: 'src/img',
         expand: true,
         src: ['**/*'],
-        dest: 'dist/calcstat/img'
+        dest: 'dist/img'
       },
       tpl_to_dist: {
         cwd: 'src/tpl',
         expand: true,
         src: ['**/*'],
-        dest: 'dist/calcstat/tpl'
+        dest: 'dist/tpl'
       }
     },
 
@@ -77,7 +77,7 @@ module.exports = (grunt) => {
           cwd: 'src',
           expand: true,
           src: ['*.js'],
-          dest: 'dist/calcstat',
+          dest: 'dist',
           ext: '.js',
           extDot: 'last'
         }]
